@@ -1,0 +1,125 @@
+/*
+Untouched instructions in code can cause some serious problems.
+Your task is to write a small program that catches the “untouched” lines of code written in our simplified programming
+language. The program starts at line 1. You may assume the program will be terminated if it infinitely loops or
+continues past its lastinstruction.
+
+Input description/format
+Each line of input contains an instruction (NEXT or GOTO).
+1.	NEXT: the program will move to the next line.
+2.	GOTO X: the program will go to line number X.
+
+Output description/format
+Please print out the line number of instructions that the program doesn't touch (one line number per line in the output file).
+Example input
+NEXT
+NEXT
+GOTO 5
+NEXT
+GOTO 1
+NEXT
+
+Example output
+4
+6
+*/
+
+import java.io.*;
+
+public class Untouched {
+	public static void main (String[] args) {
+		// filename
+		String filename = "NEXT.txt";
+		File f = new File(filename);
+		
+		int lines = 0;
+		// count the number of lines
+		try {
+			lines = countLines(f);
+			
+			boolean[] a = new boolean[lines+1];
+			String[] b = new String[lines+1];
+			
+			// put file into an array
+			inputLines(f, b);
+			// see which lines are visited
+			checkLines(a,b);
+
+			// output lines
+			output(a);
+
+		} catch (Exception ex) {
+		}
+	}
+	// counts the number of lines in the file
+	public static int countLines(File aFile) throws IOException {
+		LineNumberReader reader = null;
+		try {
+			reader = new LineNumberReader(new FileReader(aFile));
+			while ((reader.readLine()) != null);
+			return reader.getLineNumber();
+		} catch (Exception ex) {
+			return -1;
+		} finally { 
+			if(reader != null) 
+				reader.close();
+		}
+	}
+	// puts each line of the file in a String array 
+	public static void inputLines(File aFile, String[] a) {
+		int i = 1;
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(aFile));
+			while (i < a.length) {
+				// get the lines of text
+				a[i] = in.readLine();
+				i++;
+			}
+			in.close();
+		} catch (Exception e) {
+			
+		}
+	}
+	// checks if the line is NEXT or GOTO
+	// marks which lines are visited
+	public static void checkLines(boolean[] b, String[] s){
+		int i = 1;
+		for(;;) {
+			if (s[i].equals("NEXT")) {
+				if (i == b.length-1) {
+					b[i] = true;
+					return;
+				}
+				if (b[i] == true){
+					return;
+				}
+				b[i] = true;
+				i++;
+			} else { // says goto
+				String str = s[i].substring(5);
+				int lineNum = Integer.parseInt(str);
+				b[i] = true;
+				i = lineNum;
+			}
+		}
+	}
+	// checks which lines are not visited 
+	// outputs those numbers to a file called "out.txt"
+	public static void output(boolean[] b) throws IOException {
+		try {
+			File fout = new File("out.txt");
+			FileOutputStream fos = new FileOutputStream(fout);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+			
+			for (int i =1; i < b.length; i++) {
+				if (b[i] == false) {
+						bw.write(Integer.toString(i));
+						bw.newLine();		
+				}
+			}
+			bw.close();
+		} catch (Exception e) {
+			
+		}
+	}
+}
