@@ -1,0 +1,61 @@
+
+'''
+Input description/format:
+The input will consist of two product names per line, in quotation marks, which are not part of the names. The quoted names will be separated by a comma and potentially whitespace.
+You can assume that there will be ≤ 1000 lines in the input file. Also, product name length will be ≤ 255 characters and product names will contain only ASCII characters.
+
+Output description/format:
+For each line of input, output the result in one of the following 2 ways (case sensitive):
+•	Valid Pattern
+•	Invalid Pattern
+
+Example input:
+"Calculate", "Acute Call"
+"Drop Cue" , "Cued Pro"
+"carE Not", "raCe On"
+
+Example output:
+Valid Pattern
+Valid Pattern
+'''
+import re
+
+def permutation(wd1, wd2):
+	if (wd1 == None and s2 == None):
+		return true
+	if (wd1 == None or wd2 == None):
+		return false
+	str1 = ''.join(sorted(wd1))
+	str2 = ''.join(sorted(wd2))
+	return(str1 == str2)
+
+def write_to_file(filename,perm):
+	f = open(filename, 'a')
+	if (perm):
+		f.write("Valid Pattern\n")
+	else:
+		f.write("Invalid Pattern\n")
+	f.close()
+	
+def read_file(filename):
+	with open(filename) as f:
+		for line in f:
+			m = re.match('\"([ -~]+)\"\s*,\s*\"([ -~]+)\"\s*', line)
+			wd1 = m.group(1)
+			wd2 = m.group(2)
+			wd1 = wd1.lower().replace(" ", "")
+			wd2 = wd2.lower().replace(" ", "")
+			is_perm = permutation(wd1,wd2)
+			write_to_file("out.txt",is_perm)
+			
+
+		
+
+# [ -~] means match any ASCII character
+
+f = open("out.txt",'w')
+f.close()
+read_file("in.txt")
+
+
+	
